@@ -1,56 +1,75 @@
-let cat1 = {
-    name: "Paul",
-    breed: "Siamese",
-    age: "3",
-    img: "cat-pics/paul.jpeg"
+function initialize() { // initializes cat objects and persists them if this has not yet been done, else calls load_page to use persisted data to load the page
+    if(sessionStorage.getItem("initialized") === null) {
+        cat1 = {
+            name: "Paul",
+            breed: "Siamese",
+            age: "3",
+            img: "cat-pics/paul.jpeg"
+        }
+        
+        cat2 = {
+            name: "Benji",
+            breed: "Tabby",
+            age: "4",
+            img: "cat-pics/benji.jpg"
+        }
+        
+        cat3 = {
+            name: "Frank",
+            breed: "Bengal",
+            age: "8",
+            img: "cat-pics/frank.jpeg"
+        }
+        
+        cat4 = {
+            name: "Tamara",
+            breed: "American Short Hair",
+            age: "20",
+            img: "cat-pics/tamara.jpeg"
+        }
+        
+        cat5 = {
+            name: "Skinny Pete",
+            breed: "Tabby",
+            age: "4",
+            img: "cat-pics/skinny-pete.jpeg"
+        }
+        
+        cat6 = {
+            name: "Lucy",
+            breed: "Siberian",
+            age: "1",
+            img: "cat-pics/lucy.jpeg"
+        }
+
+        availableCats = [cat1, cat2, cat3, cat4, cat5, cat6];
+        ownedCats = [];
+
+        sessionStorage.setItem("availableCats", JSON.stringify(availableCats));
+        sessionStorage.setItem("ownedCats", JSON.stringify(ownedCats));
+        sessionStorage.setItem("initialized", true);
+    }
+    else {
+        load_page();
+    }
 }
 
-let cat2 = {
-    name: "Benji",
-    breed: "Tabby",
-    age: "4",
-    img: "cat-pics/benji.jpg"
+function load_page() { // sets available cats and owned cats to the persisted data
+    availableCats = JSON.parse(sessionStorage.getItem("availableCats"));
+    ownedCats = JSON.parse(sessionStorage.getItem("ownedCats"));
 }
 
-let cat3 = {
-    name: "Frank",
-    breed: "Bengal",
-    age: "8",
-    img: "cat-pics/frank.jpeg"
-}
-
-let cat4 = {
-    name: "Tamara",
-    breed: "American Short Hair",
-    age: "20",
-    img: "cat-pics/tamara.jpeg"
-}
-
-let cat5 = {
-    name: "Skinny Pete",
-    breed: "Tabby",
-    age: "4",
-    img: "cat-pics/skinny-pete.jpeg"
-}
-
-let cat6 = {
-    name: "Lucy",
-    breed: "Siberian",
-    age: "1",
-    img: "cat-pics/lucy.jpeg"
-}
-
-let catArray;
-let availableCats = [cat1, cat2, cat3, cat4, cat5, cat6];
-let ownedCats = [cat2, cat6];
-
-function adopt_cat(cat) { //deletes a cat from the available cats array and places it into the owned cats array
+function adopt_cat(cat) { // deletes a cat from the available cats array and places it into the owned cats array
     ownedCats.push(cat);
-    let removalIndex = availableCats.findIndex(function(element){element === cat});
+    let removalIndex = availableCats.findIndex(object => {return object.name === cat.name});
+    console.log(`removalIndex: ${removalIndex}`);
     availableCats.splice(removalIndex, 1);
+
+    sessionStorage.setItem("availableCats", JSON.stringify(availableCats)); // updates these changes into the persisted data
+    sessionStorage.setItem("ownedCats", JSON.stringify(ownedCats));
 }
 
-function display_cats(catList) { //displays cats in the HTML skeleton hardcoded into the cats pages
+function display_cats(catList) { // displays cats in the HTML skeleton hardcoded into the available-cats and your-cats pages
     if(catList === 'adoptable') {
         catArray = availableCats;
     }
@@ -71,3 +90,22 @@ function display_cats(catList) { //displays cats in the HTML skeleton hardcoded 
         pageButton.className = "d-block"
     }
 }
+
+let catArray, availableCats, ownedCats, cat1, cat2, cat3, cat4, cat5, cat6;
+initialize();
+
+
+function tester() {
+    console.log(cat1);
+    adopt_cat(cat1)
+}
+
+// The adopt_cat function works, I just need to find a way to pass in the cat object associated
+// with the HTML button press
+
+// I should change sessionStorage to localStorage when I am done testing
+// // variables currently delete once the tab is closed - since I open pages in a new tab, 
+// // there is no persistence across pages
+
+// // I can either use localStorage or navigation within the same tab to fix this
+// // localStorage seems like a better solution
