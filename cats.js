@@ -59,14 +59,24 @@ function load_page() { // sets available cats and owned cats to the persisted da
     ownedCats = JSON.parse(sessionStorage.getItem("ownedCats"));
 }
 
-function adopt_cat(cat) { // deletes a cat from the available cats array and places it into the owned cats array
+function adopt_cat(catNameElement, buttonElement) { // deletes a cat from the available cats array and places it into the owned cats array
+    let catName = catNameElement.innerHTML.slice(6); // isolates catName from 'Name: catName'
+    let cat; // cat will point to the cat object the HTML page references
+    availableCats.forEach(catObject => { // gets the cat object the page is referring to
+        if(catName === catObject.name){
+            cat = catObject;
+        }
+    });
+    
     ownedCats.push(cat);
-    let removalIndex = availableCats.findIndex(object => {return object.name === cat.name});
-    console.log(`removalIndex: ${removalIndex}`);
-    availableCats.splice(removalIndex, 1);
+    let removalIndex = availableCats.findIndex(object => {return object.name === cat.name}); // finds the index of the cat to remove from the available cats array
+    availableCats.splice(removalIndex, 1); // removes the cat object that has been adopted from the available cats array
 
     sessionStorage.setItem("availableCats", JSON.stringify(availableCats)); // updates these changes into the persisted data
     sessionStorage.setItem("ownedCats", JSON.stringify(ownedCats));
+
+    buttonElement.setAttribute("onclick", ''); // Edits the adopt buttonElement to display 'Adopted!' and makes it do nothing on click
+    buttonElement.innerHTML = "Adopted!";
 }
 
 function display_cats(catList) { // displays cats in the HTML skeleton hardcoded into the available-cats and your-cats pages
@@ -94,18 +104,9 @@ function display_cats(catList) { // displays cats in the HTML skeleton hardcoded
 let catArray, availableCats, ownedCats, cat1, cat2, cat3, cat4, cat5, cat6;
 initialize();
 
-
-function tester() {
-    console.log(cat1);
-    adopt_cat(cat1)
-}
-
-// The adopt_cat function works, I just need to find a way to pass in the cat object associated
-// with the HTML button press
-
-// I should change sessionStorage to localStorage when I am done testing
+// I should change sessionStorage to sessionStorage when I am done testing
 // // variables currently delete once the tab is closed - since I open pages in a new tab, 
 // // there is no persistence across pages
 
-// // I can either use localStorage or navigation within the same tab to fix this
-// // localStorage seems like a better solution
+// // I can either use sessionStorage or navigation within the same tab to fix this
+// // sessionStorage seems like a better solution
